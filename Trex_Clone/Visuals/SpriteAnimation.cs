@@ -35,6 +35,7 @@ namespace Trex_Clone.Visuals
             }
         }
         public bool IsPlaying { get; private set; }
+        public bool ShouldLoop { get; set; } = true;
         public float PlaybackProgress { get; private set; }
         public SpriteAnimationFrame CurrentFrame
         {
@@ -54,7 +55,7 @@ namespace Trex_Clone.Visuals
             {
                 PlaybackProgress += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                if (PlaybackProgress > Duration)
+                if (PlaybackProgress > Duration && ShouldLoop)
                 {
                     PlaybackProgress -= Duration;
                 }
