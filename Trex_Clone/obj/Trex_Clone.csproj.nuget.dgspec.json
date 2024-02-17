@@ -1,29 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\tarique.solomon\\Development\\MonoGame\\Trex\\Trex_Clone\\Trex_Clone\\Trex_Clone.csproj": {}
+    "C:\\Users\\tariq\\Development\\dotnet\\Trex_Clone\\Trex_Clone\\Trex_Clone.csproj": {}
   },
   "projects": {
-    "C:\\Users\\tarique.solomon\\Development\\MonoGame\\Trex\\Trex_Clone\\Trex_Clone\\Trex_Clone.csproj": {
+    "C:\\Users\\tariq\\Development\\dotnet\\Trex_Clone\\Trex_Clone\\Trex_Clone.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\tarique.solomon\\Development\\MonoGame\\Trex\\Trex_Clone\\Trex_Clone\\Trex_Clone.csproj",
+        "projectUniqueName": "C:\\Users\\tariq\\Development\\dotnet\\Trex_Clone\\Trex_Clone\\Trex_Clone.csproj",
         "projectName": "Trex_Clone",
-        "projectPath": "C:\\Users\\tarique.solomon\\Development\\MonoGame\\Trex\\Trex_Clone\\Trex_Clone\\Trex_Clone.csproj",
-        "packagesPath": "C:\\Users\\tarique.solomon\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\tarique.solomon\\Development\\MonoGame\\Trex\\Trex_Clone\\Trex_Clone\\obj\\",
+        "projectPath": "C:\\Users\\tariq\\Development\\dotnet\\Trex_Clone\\Trex_Clone\\Trex_Clone.csproj",
+        "packagesPath": "C:\\Users\\tariq\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\tariq\\Development\\dotnet\\Trex_Clone\\Trex_Clone\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\tarique.solomon\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\tariq\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://pkgs.dev.azure.com/JSIFdevs1/8f14f7ae-929a-495c-baa7-589c23e6dee8/_packaging/dm_dependencies/nuget/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net6.0": {
@@ -66,7 +64,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.302\\RuntimeIdentifierGraph.json"
         }
       }
     }

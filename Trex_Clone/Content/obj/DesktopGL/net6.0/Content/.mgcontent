@@ -4,10 +4,10 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/tarique.solomon/Development/MonoGame/Trex/Trex_Clone/Trex_Clone/Content/100-offline-sprite.png</File>
-    <File>C:/Users/tarique.solomon/Development/MonoGame/Trex/Trex_Clone/Trex_Clone/Content/1374571.mp3</File>
-    <File>C:/Users/tarique.solomon/Development/MonoGame/Trex/Trex_Clone/Trex_Clone/Content/1374572.mp3</File>
-    <File>C:/Users/tarique.solomon/Development/MonoGame/Trex/Trex_Clone/Trex_Clone/Content/1374573.mp3</File>
+    <File>C:/Users/tariq/Development/dotnet/Trex_Clone/Trex_Clone/Content/100-offline-sprite.png</File>
+    <File>C:/Users/tariq/Development/dotnet/Trex_Clone/Trex_Clone/Content/1374571.mp3</File>
+    <File>C:/Users/tariq/Development/dotnet/Trex_Clone/Trex_Clone/Content/1374572.mp3</File>
+    <File>C:/Users/tariq/Development/dotnet/Trex_Clone/Trex_Clone/Content/1374573.mp3</File>
   </SourceFiles>
   <DestFiles>
     <File xsi:nil="true" />

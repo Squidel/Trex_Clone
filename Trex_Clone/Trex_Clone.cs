@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Trex_Clone.Entities;
+using Trex_Clone.System;
 using Trex_Clone.Visuals;
 
 namespace Trex_Clone
@@ -30,6 +31,8 @@ namespace Trex_Clone
         private Texture2D _spriteTexture;
 
         private Trex _trex;
+
+        private InputController _controller;
 
 
         public Trex_Clone()
@@ -61,7 +64,8 @@ namespace Trex_Clone
 
             _spriteTexture = Content.Load<Texture2D>(ASSET_NAME_SPRITESHEET);
 
-            _trex = new Trex(_spriteTexture, new Vector2(TREX_START_POS_X, TREX_START_POS_Y - Trex.Default_Height));
+            _trex = new Trex(_spriteTexture, new Vector2(TREX_START_POS_X, TREX_START_POS_Y - Trex.Default_Height), _sfxJump);
+            _controller = new InputController(_trex);
             
 
         }
@@ -74,6 +78,7 @@ namespace Trex_Clone
             // TODO: Add your update logic here
 
             base.Update(gameTime);
+            _controller.ProcessControls(gameTime);
 
             _trex.Update(gameTime);
         }

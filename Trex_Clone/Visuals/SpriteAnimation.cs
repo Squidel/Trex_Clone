@@ -55,9 +55,16 @@ namespace Trex_Clone.Visuals
             {
                 PlaybackProgress += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                if (PlaybackProgress > Duration && ShouldLoop)
+                if (PlaybackProgress > Duration)
                 {
-                    PlaybackProgress -= Duration;
+                    if (ShouldLoop)
+                    {
+                        PlaybackProgress -= Duration;
+                    }
+                    else
+                    {
+                        Stop();
+                    }
                 }
             }
         }
@@ -85,6 +92,11 @@ namespace Trex_Clone.Visuals
             {
                 frame.Sprite.Draw(spriteBatch, position);
             }
+        }
+        public void Clear()
+        {
+            Stop();
+            _frames.Clear();
         }
     }
 }
