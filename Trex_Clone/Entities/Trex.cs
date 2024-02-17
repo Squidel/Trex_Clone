@@ -149,6 +149,7 @@ namespace Trex_Clone.Entities
                     State = TrexState.Running;
                 }
             }
+
             else if (State == TrexState.Running)
             {
                 _runningAnimation.Update(gameTime);
