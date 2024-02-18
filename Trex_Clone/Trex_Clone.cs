@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using Trex_Clone.Entities;
 using Trex_Clone.System;
 using Trex_Clone.Visuals;
@@ -20,7 +21,7 @@ namespace Trex_Clone
         private const string ASSET_NAME_HIT = "1374573";
         private const string ASSET_NAME_SCORED = "1374572";
         private const string ASSET_NAME_JUMP = "1374571";
-
+        private const float FADE_IN_ANIMATION_SPEED = 800f;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
@@ -29,12 +30,19 @@ namespace Trex_Clone
         private SoundEffect _sfxScored;
 
         private Texture2D _spriteTexture;
+        private Texture2D _fadeInTexture;
+
+        private float _fadeInTexturePOSX;
 
         private Trex _trex;
         private GroundManager _groundManager;
 
         private InputController _controller;
         private EntityManager _entityManager;
+
+        private KeyboardState _previousKeyBoardState;
+
+        public GameState gameState { get; set; }
 
 
         public Trex_Clone()
@@ -43,6 +51,8 @@ namespace Trex_Clone
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             _entityManager = new EntityManager();
+            gameState = GameState.Initial;
+            _fadeInTexturePOSX = Trex.Default_Width;
         }
 
         protected override void Initialize()
@@ -67,10 +77,15 @@ namespace Trex_Clone
 
             _spriteTexture = Content.Load<Texture2D>(ASSET_NAME_SPRITESHEET);
 
+            _fadeInTexture = new Texture2D(GraphicsDevice, 1, 1);
+            _fadeInTexture.SetData(new Color[] {Color.White});
+
             _trex = new Trex(_spriteTexture, new Vector2(TREX_START_POS_X, TREX_START_POS_Y - Trex.Default_Height), _sfxJump);
+            _trex.DrawOrder = 10;
             _controller = new InputController(_trex);
-            _groundManager = new GroundManager(_spriteTexture, _entityManager);
+            _groundManager = new GroundManager(_spriteTexture, _entityManager, _trex);
             _entityManager.AddEntity(_trex);
+            _entityManager.AddEntity(_groundManager);
             _groundManager.Initialize();
         }
 
@@ -79,12 +94,29 @@ namespace Trex_Clone
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+
+            var keyboardState = Keyboard.GetState();
             // TODO: Add your update logic here
 
             base.Update(gameTime);
-            _controller.ProcessControls(gameTime);
+            if (gameState == GameState.Playing)
+            {
+                _controller.ProcessControls(gameTime); 
+            }else if (gameState == GameState.Transition)
+            {
+                _fadeInTexturePOSX += (float)gameTime.ElapsedGameTime.TotalSeconds * FADE_IN_ANIMATION_SPEED;
+            }else if(gameState == GameState.Initial)
+            {
+                bool isStartKeyPressed = keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.Space);
+                bool wasStartKeyPressed = _previousKeyBoardState.IsKeyDown(Keys.Up) || _previousKeyBoardState.IsKeyDown(Keys.Space);
+                if (!wasStartKeyPressed && isStartKeyPressed)
+                {
+                    StartGame();
+                }
+            }
 
             _entityManager.Update(gameTime);
+            _previousKeyBoardState = keyboardState;
         }
 
         protected override void Draw(GameTime gameTime)
@@ -95,10 +127,24 @@ namespace Trex_Clone
             _spriteBatch.Begin();
 
             _entityManager.Draw(_spriteBatch, gameTime);
+            if(gameState == GameState.Initial || gameState == GameState.Transition)
+            {
+                _spriteBatch.Draw(_fadeInTexture, new Rectangle((int)Math.Round(_fadeInTexturePOSX), 0, WindowWidth, WindowHeight), Color.CornflowerBlue);
+            }
 
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+        public bool StartGame()
+        {
+            if(gameState != GameState.Initial)
+            {
+                return false;
+            }
+            gameState = GameState.Transition;
+            _trex.BeginJump();
+            return true;
         }
     }
 }

@@ -20,7 +20,9 @@ namespace Trex_Clone.Entities
         private const int SPRITE_Y = 54;
 
         //position we want on the screen
-        private const float GROUND_TILE_POS_Y = 120.995f;
+        private const float GROUND_TILE_POS_Y = 122f;
+
+        private Random _random = new Random();
 
         private Texture2D _spriteTexture;
         private Sprite _regularSprite;
@@ -28,13 +30,15 @@ namespace Trex_Clone.Entities
 
         private readonly List<GroundTile> _groundTiles;
         private readonly EntityManager _entityManager;
+        private Trex _trex;
         public int DrawOrder { get; set; }
 
-        public GroundManager(Texture2D texture2D, EntityManager entityManager)
+        public GroundManager(Texture2D texture2D, EntityManager entityManager, Trex trex)
         {
             _spriteTexture = texture2D;
             _groundTiles = new List<GroundTile>();
             _entityManager = entityManager;
+            _trex = trex;
             _regularSprite = new Sprite(_spriteTexture, SPRITE_X, SPRITE_Y, SPRITE_WIDTH, SPRITE_HEIGHT, Color.White);
             _bumpySprite = new Sprite(_spriteTexture, SPRITE_X + SPRITE_WIDTH, SPRITE_Y, SPRITE_WIDTH, SPRITE_HEIGHT, Color.White);
         }
@@ -52,7 +56,28 @@ namespace Trex_Clone.Entities
 
         public void Update(GameTime gameTime)
         {
-            
+            if (_groundTiles.Any())
+            {
+                var maxPOSX = _groundTiles.Max(x => x.PositionX);
+                if(maxPOSX < 0)
+                {
+                    SpawnTile(maxPOSX);
+                }
+            }
+            List<GroundTile> tilesToRemove = new List<GroundTile>();
+            foreach(var tile in _groundTiles)
+            {
+                tile.PositionX -= _trex.Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if(tile.PositionX < -SPRITE_WIDTH)
+                {
+                    _entityManager.RemoveEntity(tile);
+                    tilesToRemove.Add(tile);
+                }
+            }
+            foreach (var item in tilesToRemove)
+            {
+                _groundTiles.Remove(item);
+            }
         }
         private GroundTile CreateRegularTile(float positionx)
         {
@@ -63,6 +88,23 @@ namespace Trex_Clone.Entities
         {
             GroundTile groundTile = new GroundTile(positionx, _bumpySprite, GROUND_TILE_POS_Y);
             return groundTile;
+        }
+        private void SpawnTile(float maxPosX)
+        {
+            var r = _random.NextDouble();
+            var posX = maxPosX + SPRITE_WIDTH;
+
+            GroundTile groundTile;
+            if (r > 0.5)
+            {
+                groundTile = CreateBumpyTile(posX);
+            }
+            else
+            {
+                groundTile = CreateRegularTile(posX);
+            }
+            _entityManager.AddEntity(groundTile);
+            _groundTiles.Add(groundTile);
         }
     }
 }
