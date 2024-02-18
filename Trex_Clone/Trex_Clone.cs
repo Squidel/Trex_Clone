@@ -31,8 +31,10 @@ namespace Trex_Clone
         private Texture2D _spriteTexture;
 
         private Trex _trex;
+        private GroundManager _groundManager;
 
         private InputController _controller;
+        private EntityManager _entityManager;
 
 
         public Trex_Clone()
@@ -40,6 +42,7 @@ namespace Trex_Clone
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            _entityManager = new EntityManager();
         }
 
         protected override void Initialize()
@@ -66,8 +69,9 @@ namespace Trex_Clone
 
             _trex = new Trex(_spriteTexture, new Vector2(TREX_START_POS_X, TREX_START_POS_Y - Trex.Default_Height), _sfxJump);
             _controller = new InputController(_trex);
-            
-
+            _groundManager = new GroundManager(_spriteTexture, _entityManager);
+            _entityManager.AddEntity(_trex);
+            _groundManager.Initialize();
         }
 
         protected override void Update(GameTime gameTime)
@@ -80,7 +84,7 @@ namespace Trex_Clone
             base.Update(gameTime);
             _controller.ProcessControls(gameTime);
 
-            _trex.Update(gameTime);
+            _entityManager.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -90,7 +94,7 @@ namespace Trex_Clone
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
 
-            _trex.Draw(_spriteBatch, gameTime);
+            _entityManager.Draw(_spriteBatch, gameTime);
 
             _spriteBatch.End();
 

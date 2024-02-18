@@ -39,31 +39,31 @@ namespace Trex_Clone.Entities
         private const int DUCKING_ANIMATION_FRAME_TWO_X = DUCKING_ANIMATION_FRAME_ONE_X + DUCKING_SPRITE_WIDTH;
 
         public int DrawOrder { get; set; }
-        //public Sprite Sprite { get; private set; }
-        private Sprite _idleBackground;
 
+        private Sprite _idleBackground;
         private Sprite _idleSprite;
         private Sprite _idleBlink;
-        private SpriteAnimation _blinkAnimation;
-        private SpriteAnimation _runningAnimation;
         private Sprite _runningFrameOne;
         private Sprite _runningFrameTwo;
-
         private Sprite _duckingFrameOne;
         private Sprite _duckingFrameTwo;
+
+        private SpriteAnimation _blinkAnimation;
+        private SpriteAnimation _runningAnimation;
         private SpriteAnimation _duckingAnimation;
+
+        private SoundEffect _jumpSound;
+
         private Random _random;
 
         private float _verticalVelocity;
         private float _dropVelocity;
-
         private float _startPositionY;
+
         public Vector2 Position { get; set; }
         public TrexState State { get; private set; }
         public bool IsAlive { get; private set; }
         public float Speed { get; private set; }
-        private SoundEffect _jumpSound;
-
 
         public Trex(Texture2D texture2D, Vector2 position, SoundEffect jumpSound)
         {
@@ -98,6 +98,42 @@ namespace Trex_Clone.Entities
 
         }
 
+        #region AnimationObjects
+        private void CreateBlinkAnimation()
+        {
+            _blinkAnimation.Clear();
+            _blinkAnimation.ShouldLoop = false;
+
+            double blinkTimeStamp = 2f + _random.NextDouble() * (10f - 2f);
+
+            _blinkAnimation.AddFrame(_idleSprite, 0);
+            _blinkAnimation.AddFrame(_idleBlink, (float)blinkTimeStamp);
+            _blinkAnimation.AddFrame(_idleSprite, (float)blinkTimeStamp + BlinkDuration);
+
+        }
+        private void CreateRunningAnimation()
+        {
+            _runningAnimation.Clear();
+            _runningAnimation.ShouldLoop = true;
+
+            _runningAnimation.AddFrame(_runningFrameOne, 0);
+            _runningAnimation.AddFrame(_runningFrameTwo, 1 / 10f);
+            _runningAnimation.AddFrame(_runningFrameOne, 1 / 10f * 2);
+        }
+        private void CreateDuckingAnimation()
+        {
+            _duckingAnimation.Clear();
+            _duckingAnimation.ShouldLoop = true;
+
+            _duckingAnimation.AddFrame(_duckingFrameOne, 0);
+            _duckingAnimation.AddFrame(_duckingFrameTwo, 1 / 10f);
+            _duckingAnimation.AddFrame(_duckingFrameOne, 1 / 10f * 2);
+        }
+        #endregion
+
+
+        //This section should deal with drawing and upddating the entity
+        #region EntityEvents
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             if (State == TrexState.Idle)
@@ -160,40 +196,10 @@ namespace Trex_Clone.Entities
             }
             _dropVelocity = 0;
         }
-
-        private void CreateBlinkAnimation()
-        {
-
-            _blinkAnimation.Clear();
-            _blinkAnimation.ShouldLoop = false;
+        #endregion
 
 
-            double blinkTimeStamp = 2f + _random.NextDouble() * (10f - 2f);
-
-            _blinkAnimation.AddFrame(_idleSprite, 0);
-            _blinkAnimation.AddFrame(_idleBlink, (float)blinkTimeStamp);
-            _blinkAnimation.AddFrame(_idleSprite, (float)blinkTimeStamp + BlinkDuration);
-
-
-        }
-        private void CreateRunningAnimation()
-        {
-            _runningAnimation.Clear();
-            _runningAnimation.ShouldLoop = true;
-
-            _runningAnimation.AddFrame(_runningFrameOne, 0);
-            _runningAnimation.AddFrame(_runningFrameTwo, 1 / 10f);
-            _runningAnimation.AddFrame(_runningFrameOne, 1 / 10f * 2);
-        }
-        private void CreateDuckingAnimation()
-        {
-            _duckingAnimation.Clear();
-            _duckingAnimation.ShouldLoop = true;
-
-            _duckingAnimation.AddFrame(_duckingFrameOne, 0);
-            _duckingAnimation.AddFrame(_duckingFrameTwo, 1 / 10f);
-            _duckingAnimation.AddFrame(_duckingFrameOne, 1 / 10f * 2);
-        }
+        #region Entity Actions
         public bool BeginJump()
         {
             if (State == TrexState.Jumping || State == TrexState.Falling)
@@ -241,9 +247,8 @@ namespace Trex_Clone.Entities
             }
             State = TrexState.Falling;
             _dropVelocity = DROP_VELOCITY;
-
-            //Position = new Vector2(Position.X, _startPositionY);
             return true;
         }
-    }
+    } 
+    #endregion
 }
