@@ -40,6 +40,8 @@ namespace Trex_Clone
         private InputController _controller;
         private EntityManager _entityManager;
 
+        private ScoreBoard _scoreBoard;
+
         private KeyboardState _previousKeyBoardState;
 
         public GameState gameState { get; set; }
@@ -82,11 +84,32 @@ namespace Trex_Clone
 
             _trex = new Trex(_spriteTexture, new Vector2(TREX_START_POS_X, TREX_START_POS_Y - Trex.Default_Height), _sfxJump);
             _trex.DrawOrder = 10;
+            _trex.JumpComplete += trex_JumpComplete;
+
+            _scoreBoard = new ScoreBoard(_spriteTexture, new Vector2(WindowWidth - 100, 10));
+            _scoreBoard.Score = 498;
+
             _controller = new InputController(_trex);
+
             _groundManager = new GroundManager(_spriteTexture, _entityManager, _trex);
+
             _entityManager.AddEntity(_trex);
             _entityManager.AddEntity(_groundManager);
+            _entityManager.AddEntity(_scoreBoard);
+
             _groundManager.Initialize();
+
+            
+            
+        }
+
+        private void trex_JumpComplete(object sender, EventArgs e)
+        {
+           if(gameState == GameState.Transition)
+            {
+                gameState = GameState.Playing;
+                _trex.Initialize();
+            }
         }
 
         protected override void Update(GameTime gameTime)

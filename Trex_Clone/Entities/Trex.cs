@@ -37,6 +37,7 @@ namespace Trex_Clone.Entities
         private const int DUCKING_ANIMATION_FRAME_ONE_X = RUNNING_ANIMATION_FRAME_TWO_X + (Default_Width * 3);
         private const int DUCKING_ANIMATION_FRAME_ONE_Y = 0;
         private const int DUCKING_ANIMATION_FRAME_TWO_X = DUCKING_ANIMATION_FRAME_ONE_X + DUCKING_SPRITE_WIDTH;
+        private const float START_SPEED = 250f;
 
         public int DrawOrder { get; set; }
 
@@ -59,6 +60,8 @@ namespace Trex_Clone.Entities
         private float _verticalVelocity;
         private float _dropVelocity;
         private float _startPositionY;
+
+        public event EventHandler JumpComplete;
 
         public Vector2 Position { get; set; }
         public TrexState State { get; private set; }
@@ -183,11 +186,13 @@ namespace Trex_Clone.Entities
                     Position = new Vector2(Position.X, _startPositionY);
                     _verticalVelocity = 0;
                     State = TrexState.Running;
+                    OnJumpComplete();
                 }
             }
 
             else if (State == TrexState.Running)
             {
+                Position = new Vector2(Position.X, Position.Y);
                 _runningAnimation.Update(gameTime);
             }
             else if (State == TrexState.Ducking)
@@ -249,6 +254,23 @@ namespace Trex_Clone.Entities
             _dropVelocity = DROP_VELOCITY;
             return true;
         }
-    } 
-    #endregion
+
+        public void Initialize()
+        {
+            Speed = START_SPEED;
+            State = TrexState.Running;
+        }
+        #endregion
+
+        #region Events
+
+        protected virtual void OnJumpComplete()
+        {
+            EventHandler handler = JumpComplete;
+            handler?.Invoke(this, EventArgs.Empty);
+        }
+        #endregion
+    }
 }
+
+
