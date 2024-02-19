@@ -17,8 +17,11 @@ namespace Trex_Clone.Entities
         private const int TEXTURE_NUMS_HEIGHT = 13;
 
         private const byte NUM_DIGITS_TO_DRAW = 5;
+        private const float SCOREBOARD_RATE = 0.05f;
+        private Rectangle SOURCE_HI = new Rectangle(755, 0, 20, 13);
 
         private Texture2D _texture;
+        private Trex _trex;
 
         public double Score { get; set; }
         public int DisplayScore
@@ -31,17 +34,29 @@ namespace Trex_Clone.Entities
         public int HighScore { get; set; }
         public int DrawOrder { get; } = 100;
         public Vector2 Position { get; set; }
-        public ScoreBoard(Texture2D texture2D, Vector2 position)
+        public ScoreBoard(Texture2D texture2D, Vector2 position, Trex trex)
         {
             _texture = texture2D;
             Position = position;
+            _trex = trex;
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            int[] scoreDigits = SplitDigits(DisplayScore);
-            float posX = Position.X;
-            foreach(int scoreDigit in scoreDigits)
+            DrawScore(spriteBatch, DisplayScore, Position.X + 65);            
+            if (HasHighScore())
+            {
+                spriteBatch.Draw(_texture, new Vector2(Position.X - 20, Position.Y), SOURCE_HI, Color.White);
+                //spriteBatch.Draw(_texture, new Vector2(Position.X - 10, Position.Y), new Rectangle(765, 0, 15, 13), Color.White);
+                DrawScore(spriteBatch, HighScore, Position.X + 2);
+            }
+        }
+
+        private void DrawScore(SpriteBatch spriteBatch, int score, float startPosX)
+        {
+            int[] scoreDigits = SplitDigits(score);
+            float posX = startPosX;
+            foreach (int scoreDigit in scoreDigits)
             {
                 Rectangle coords = GetDigitTexture(scoreDigit);
 
@@ -50,13 +65,17 @@ namespace Trex_Clone.Entities
                 spriteBatch.Draw(_texture, screenPos, coords, Color.White);
 
                 posX += TEXTURE_NUMS_WIDTH;
-                
+
             }
         }
 
         public void Update(GameTime gameTime)
         {
-
+            Score += _trex.Speed * SCOREBOARD_RATE * gameTime.ElapsedGameTime.TotalSeconds;
+        }
+        public bool HasHighScore()
+        {
+            return HighScore > 0;
         }
 
         private Rectangle GetDigitTexture(int digit)

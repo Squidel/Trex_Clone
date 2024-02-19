@@ -22,6 +22,8 @@ namespace Trex_Clone
         private const string ASSET_NAME_SCORED = "1374572";
         private const string ASSET_NAME_JUMP = "1374571";
         private const float FADE_IN_ANIMATION_SPEED = 800f;
+        private const int SCORE_BOARD_POS_X = WindowWidth - 150;
+        private const int SCORE_BOARD_POS_Y = 10;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
@@ -86,8 +88,9 @@ namespace Trex_Clone
             _trex.DrawOrder = 10;
             _trex.JumpComplete += trex_JumpComplete;
 
-            _scoreBoard = new ScoreBoard(_spriteTexture, new Vector2(WindowWidth - 100, 10));
-            _scoreBoard.Score = 498;
+            _scoreBoard = new ScoreBoard(_spriteTexture, new Vector2(SCORE_BOARD_POS_X, SCORE_BOARD_POS_Y), _trex);
+            //_scoreBoard.Score = 498;
+            //_scoreBoard.HighScore = 25;
 
             _controller = new InputController(_trex);
 
