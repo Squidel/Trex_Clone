@@ -109,7 +109,7 @@ namespace Trex_Clone
             {
                 bool isStartKeyPressed = keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.Space);
                 bool wasStartKeyPressed = _previousKeyBoardState.IsKeyDown(Keys.Up) || _previousKeyBoardState.IsKeyDown(Keys.Space);
-                if (!wasStartKeyPressed && isStartKeyPressed)
+                if ( isStartKeyPressed)
                 {
                     StartGame();
                 }
