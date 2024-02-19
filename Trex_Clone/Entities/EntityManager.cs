@@ -65,5 +65,10 @@ namespace Trex_Clone.Entities
         {
             _entitiesToRemove.AddRange(_entities);
         }
+
+        public IEnumerable<T> GetEntititesOfType<T>() where T : IGameEntity
+        {
+            return _entities.OfType<T>();
+        }
     }
 }

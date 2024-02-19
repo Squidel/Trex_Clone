@@ -9,7 +9,7 @@ using Trex_Clone.Visuals;
 
 namespace Trex_Clone.Entities
 {
-    internal class ScoreBoard : IGameEntity
+    public class ScoreBoard : IGameEntity
     {
         private const int TEXTURE_NUMS_X = 655;
         private const int TEXTURE_NUMS_Y = 0;

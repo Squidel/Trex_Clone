@@ -43,6 +43,7 @@ namespace Trex_Clone
         private EntityManager _entityManager;
 
         private ScoreBoard _scoreBoard;
+        private ObstacleManager _obstacleManager;
 
         private KeyboardState _previousKeyBoardState;
 
@@ -96,9 +97,12 @@ namespace Trex_Clone
 
             _groundManager = new GroundManager(_spriteTexture, _entityManager, _trex);
 
+            _obstacleManager = new ObstacleManager(_entityManager, _trex, _scoreBoard, _spriteTexture);
+
             _entityManager.AddEntity(_trex);
             _entityManager.AddEntity(_groundManager);
             _entityManager.AddEntity(_scoreBoard);
+            _entityManager.AddEntity(_obstacleManager);
 
             _groundManager.Initialize();
 
@@ -112,6 +116,8 @@ namespace Trex_Clone
             {
                 gameState = GameState.Playing;
                 _trex.Initialize();
+
+                _obstacleManager.isEnabled = true;
             }
         }
 
