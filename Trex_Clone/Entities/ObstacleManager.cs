@@ -8,8 +8,8 @@ namespace Trex_Clone.Entities
     public class ObstacleManager : IGameEntity
     {
         private const float MIN_SPAWN_DISTANCE = 40f;
-        private const int MAX_DISTANCE_BETWEEN_OBSTACLES = 80;
-        private const int MIN_DISTANCE_BETWEEN_OBSTACLES = 20;
+        private const int MAX_DISTANCE_BETWEEN_OBSTACLES = 50;
+        private const int MIN_DISTANCE_BETWEEN_OBSTACLES = 10;
 
         private const int OBSTACLE_TOLERANCE_VALUE = 5;
 
@@ -74,6 +74,16 @@ namespace Trex_Clone.Entities
             obstacle.DrawOrder = OBSTACLE_DRAW_ORDER;
             _entityManager.AddEntity(obstacle);
 
+        }
+        public void Reset()
+        {
+            var entities = _entityManager.GetEntititesOfType<Obstacle>();
+            foreach (var entity in entities)
+            {
+                _entityManager.RemoveEntity(entity);
+            }
+            _lastSpawnScore = -1;
+            _currentTargetDistance = 0;
         }
     }
 }

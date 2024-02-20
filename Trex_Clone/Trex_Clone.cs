@@ -17,6 +17,7 @@ namespace Trex_Clone
         public const int TREX_START_POS_X = 1;
         public const int TREX_START_POS_Y = WindowHeight - 16;
 
+        private const string MOUSE_TEXTURE = "6_8mouse_pointer";
         private const string ASSET_NAME_SPRITESHEET = "100-offline-sprite";
         private const string ASSET_NAME_HIT = "1374573";
         private const string ASSET_NAME_SCORED = "1374572";
@@ -102,9 +103,10 @@ namespace Trex_Clone
 
             _obstacleManager = new ObstacleManager(_entityManager, _trex, _scoreBoard, _spriteTexture);
 
-            _gameOverScreen = new GameOver(_spriteTexture);
+            var mouseTexture = Content.Load<Texture2D>(MOUSE_TEXTURE);
+            _gameOverScreen = new GameOver(_spriteTexture, mouseTexture);
             _gameOverScreen.Position = new Vector2(WindowWidth / 2 - (GameOver.GAME_OVER_WIDTH/2), WindowHeight/2-30);
-
+            _gameOverScreen.Reset += trex_clone_Reset;
 
             _entityManager.AddEntity(_trex);
             _entityManager.AddEntity(_groundManager);
@@ -136,6 +138,26 @@ namespace Trex_Clone
             _gameOverScreen.IsEnabled = true;
             
 
+        }
+        private void trex_clone_Reset(object sender, EventArgs e)
+        {
+            gameState = GameState.GameOver;
+            Replay();
+        }
+
+        public bool Replay()
+        {
+            if(gameState != GameState.GameOver)
+            {
+                return false;
+            }
+            gameState = GameState.Playing;
+            _trex.Initialize();
+            _scoreBoard.Score = 0;
+            _obstacleManager.Reset();
+            _obstacleManager.isEnabled=true;
+            _gameOverScreen.IsEnabled = false;
+            return true;
         }
 
         protected override void Update(GameTime gameTime)
