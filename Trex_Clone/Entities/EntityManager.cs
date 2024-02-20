@@ -20,6 +20,9 @@ namespace Trex_Clone.Entities
         {
             foreach (var entity in _entities)
             {
+                //This is amazing. There is a frame where the entity is queued to be removed, but was still updated
+                if (_entitiesToRemove.Contains(entity))
+                    continue;
                 entity.Update(gameTime);
             }
 

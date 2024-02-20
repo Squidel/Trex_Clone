@@ -45,13 +45,21 @@ namespace Trex_Clone.Entities
 
         public void Initialize()
         {
+            //clears all tiles within the class
+            _groundTiles.Clear();
+
+            //clears all tiles from the entity manager
+            foreach (GroundTile tile in _entityManager.GetEntititesOfType<GroundTile>())
+            {
+                _entityManager.RemoveEntity(tile);
+            }
             var groundTile = CreateRegularTile(0);
             _groundTiles.Add(groundTile);
             _entityManager.AddEntity(groundTile);
         }
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            
+
         }
 
         public void Update(GameTime gameTime)
@@ -59,16 +67,16 @@ namespace Trex_Clone.Entities
             if (_groundTiles.Any())
             {
                 var maxPOSX = _groundTiles.Max(x => x.PositionX);
-                if(maxPOSX < 0)
+                if (maxPOSX < 0)
                 {
                     SpawnTile(maxPOSX);
                 }
             }
             List<GroundTile> tilesToRemove = new List<GroundTile>();
-            foreach(var tile in _groundTiles)
+            foreach (var tile in _groundTiles)
             {
                 tile.PositionX -= _trex.Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if(tile.PositionX < -SPRITE_WIDTH)
+                if (tile.PositionX < -SPRITE_WIDTH)
                 {
                     _entityManager.RemoveEntity(tile);
                     tilesToRemove.Add(tile);
@@ -81,7 +89,7 @@ namespace Trex_Clone.Entities
         }
         private GroundTile CreateRegularTile(float positionx)
         {
-            GroundTile groundTile = new GroundTile(positionx,_regularSprite, GROUND_TILE_POS_Y);
+            GroundTile groundTile = new GroundTile(positionx, _regularSprite, GROUND_TILE_POS_Y);
             return groundTile;
         }
         private GroundTile CreateBumpyTile(float positionx)

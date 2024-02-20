@@ -134,6 +134,7 @@ namespace Trex_Clone
         private void trex_Died(object sender, EventArgs e)
         {
             gameState = GameState.GameOver;
+            _sfxHit.Play();
             _obstacleManager.isEnabled = false;
             _gameOverScreen.IsEnabled = true;
             
@@ -157,6 +158,7 @@ namespace Trex_Clone
             _obstacleManager.Reset();
             _obstacleManager.isEnabled=true;
             _gameOverScreen.IsEnabled = false;
+            _groundManager.Initialize();
             return true;
         }
 

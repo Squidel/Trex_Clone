@@ -26,7 +26,7 @@ namespace Trex_Clone.Entities
         private const float MIN_JUMP_HEIGHT = 40f;
 
         private const float JUMP_START_VELOCITY = -480f;
-        private const float GRAVITY = 1600f;
+        private const float GRAVITY = 1300f;
         private const float END_JUMP_VELOCITY = -60f;
         private const float DROP_VELOCITY = 600f;
 
@@ -245,6 +245,7 @@ namespace Trex_Clone.Entities
             Speed = START_SPEED;
             IsAlive = true;
             State = TrexState.Running;
+            Position = new Vector2(Position.X, _startPositionY);
         }
         #endregion
 
