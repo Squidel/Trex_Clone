@@ -12,9 +12,9 @@ namespace Trex_Clone.Entities
         private const int TINY_CACTUS_POS_X = 228;
         private const int TINY_CACTUS_POS_Y = 0;
 
-        private const int BIG_CACTUS_WIDTH = 17;
-        private const int BIG_CACTUS_HEIGHT = 36;
-        private const int BIG_CACTUS_POS_X = 228;
+        private const int BIG_CACTUS_WIDTH = 25;
+        private const int BIG_CACTUS_HEIGHT = 50;
+        private const int BIG_CACTUS_POS_X = 332;
         private const int BIG_CACTUS_POS_Y = 0;
         private Texture2D _texture;
         public enum GroupSize
@@ -39,32 +39,41 @@ namespace Trex_Clone.Entities
         private Sprite GenerateSprite()
         {
             Sprite sprite = null;
-            if(!isLarge)
+            int offset = 0;
+            int width = 0;
+            int groupWidth = 0;
+            int groupHeight = 0;
+            int posX = 0;
+            if (!isLarge)
             {
-                int offset = 0;
-                int width = TINY_CACTUS_WIDTH;
-                switch(groupSize)
-                {
-                    case GroupSize.Small:
-                        offset = 0;
-                        width = TINY_CACTUS_WIDTH;
-                        break;
-                    case GroupSize.Medium:
-                        offset = 1;
-                        width = TINY_CACTUS_WIDTH * 2;
-                        break;
-                    case GroupSize.Large:
-                        offset = 3;
-                        width = TINY_CACTUS_WIDTH * 3;
-                        break;
-
-                }
-                sprite = new Sprite(_texture, TINY_CACTUS_POS_X + (TINY_CACTUS_WIDTH * offset), TINY_CACTUS_POS_Y, width, TINY_CACTUS_HEIGHT, Color.White);
+                width = TINY_CACTUS_WIDTH;
+                groupHeight = TINY_CACTUS_HEIGHT;
+                posX = TINY_CACTUS_POS_X;
             }
             else
             {
+                width = BIG_CACTUS_WIDTH;
+                groupHeight = BIG_CACTUS_HEIGHT;
+                posX = BIG_CACTUS_POS_X;
+            }
+
+            switch (groupSize)
+            {
+                case GroupSize.Small:
+                    offset = 0;
+                    groupWidth = width;
+                    break;
+                case GroupSize.Medium:
+                    offset = 1;
+                    groupWidth = width * 2;
+                    break;
+                case GroupSize.Large:
+                    offset = 3;
+                    groupWidth = width * 3;
+                    break;
 
             }
+            sprite = new Sprite(_texture, posX + width * offset, TINY_CACTUS_POS_Y, groupWidth, groupHeight, Color.White);
             return sprite;
         }
 

@@ -50,6 +50,7 @@ namespace Trex_Clone.Entities
                 //spriteBatch.Draw(_texture, new Vector2(Position.X - 10, Position.Y), new Rectangle(765, 0, 15, 13), Color.White);
                 DrawScore(spriteBatch, HighScore, Position.X + 2);
             }
+            DrawSpeed(spriteBatch);
         }
 
         private void DrawScore(SpriteBatch spriteBatch, int score, float startPosX)
@@ -67,6 +68,12 @@ namespace Trex_Clone.Entities
                 posX += TEXTURE_NUMS_WIDTH;
 
             }
+        }
+        //This method is mainly for debugging as I want to see the speed updating on the screen
+        private void DrawSpeed(SpriteBatch spriteBatch)
+        {
+            int trexSpeed = (int)Math.Round(_trex.Speed);
+            DrawScore(spriteBatch, trexSpeed, 10);
         }
 
         public void Update(GameTime gameTime)

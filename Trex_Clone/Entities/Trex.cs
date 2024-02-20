@@ -37,7 +37,11 @@ namespace Trex_Clone.Entities
         private const int DUCKING_ANIMATION_FRAME_ONE_X = RUNNING_ANIMATION_FRAME_TWO_X + (Default_Width * 3);
         private const int DUCKING_ANIMATION_FRAME_ONE_Y = 0;
         private const int DUCKING_ANIMATION_FRAME_TWO_X = DUCKING_ANIMATION_FRAME_ONE_X + DUCKING_SPRITE_WIDTH;
-        private const float START_SPEED = 250f;
+
+        private const float ACCELERATION_PPS_PER_SECOND = 5f;
+
+        public const float START_SPEED = 250f;
+        public const float MAX_SPEED = 900f;
 
         public int DrawOrder { get; set; }
 
@@ -198,6 +202,15 @@ namespace Trex_Clone.Entities
             else if (State == TrexState.Ducking)
             {
                 _duckingAnimation.Update(gameTime);
+            }
+
+            if(State != TrexState.Idle)
+            {
+                Speed += ACCELERATION_PPS_PER_SECOND * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            if(Speed > MAX_SPEED)
+            {
+                Speed = MAX_SPEED;
             }
             _dropVelocity = 0;
         }

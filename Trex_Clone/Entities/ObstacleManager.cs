@@ -8,8 +8,12 @@ namespace Trex_Clone.Entities
     public class ObstacleManager : IGameEntity
     {
         private const float MIN_SPAWN_DISTANCE = 40f;
-        private const int MAX_DISTANCE_BETWEEN_OBSTACLES = 300;
-        private const int MIN_DISTANCE_BETWEEN_OBSTACLES = 50;
+        private const int MAX_DISTANCE_BETWEEN_OBSTACLES = 50;
+        private const int MIN_DISTANCE_BETWEEN_OBSTACLES = 10;
+
+        private const int OBSTACLE_TOLERANCE_VALUE = 5;
+
+        private const int OBSTACLE_DRAW_ORDER = 12;
 
         private readonly EntityManager _entityManager;
         private readonly Trex _trex;
@@ -46,6 +50,7 @@ namespace Trex_Clone.Entities
             if (CanSpawnObstacles && (_lastSpawnScore <=0 ||  (_scoreboard.Score - _lastSpawnScore >= _currentTargetDistance)))
             {
                 _currentTargetDistance = _random.NextDouble() * (MAX_DISTANCE_BETWEEN_OBSTACLES - MIN_DISTANCE_BETWEEN_OBSTACLES) + MIN_DISTANCE_BETWEEN_OBSTACLES;
+                _currentTargetDistance *= (_trex.Speed - (Trex.START_SPEED-1)) / (Trex.MAX_SPEED - Trex.START_SPEED) * OBSTACLE_TOLERANCE_VALUE;
                 _lastSpawnScore = _scoreboard.Score;
                 SpawnObstacles();
             }
@@ -63,7 +68,10 @@ namespace Trex_Clone.Entities
             Obstacle obstacle = null;
             //TODO: create obstacles
             var cactusSize = _random.Next(0, 3);
-            obstacle = new CactusGroup(_trex, new Vector2(600, 100),false, (CactusGroup.GroupSize)cactusSize, _texture);
+            bool isLarge = _random.NextDouble() > 0.5;
+            float posY = isLarge ? 85 : 95;
+            obstacle = new CactusGroup(_trex, new Vector2(Trex_Clone.WindowWidth+20, posY), isLarge, (CactusGroup.GroupSize)cactusSize, _texture);
+            obstacle.DrawOrder = OBSTACLE_DRAW_ORDER;
             _entityManager.AddEntity(obstacle);
 
         }

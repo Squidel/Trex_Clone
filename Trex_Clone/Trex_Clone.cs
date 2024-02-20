@@ -153,7 +153,7 @@ namespace Trex_Clone
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.White);
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
@@ -161,7 +161,7 @@ namespace Trex_Clone
             _entityManager.Draw(_spriteBatch, gameTime);
             if(gameState == GameState.Initial || gameState == GameState.Transition)
             {
-                _spriteBatch.Draw(_fadeInTexture, new Rectangle((int)Math.Round(_fadeInTexturePOSX), 0, WindowWidth, WindowHeight), Color.CornflowerBlue);
+                _spriteBatch.Draw(_fadeInTexture, new Rectangle((int)Math.Round(_fadeInTexturePOSX), 0, WindowWidth, WindowHeight), Color.White);
             }
 
             _spriteBatch.End();
