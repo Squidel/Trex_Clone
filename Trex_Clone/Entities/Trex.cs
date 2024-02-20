@@ -38,6 +38,8 @@ namespace Trex_Clone.Entities
         private const int DUCKING_ANIMATION_FRAME_ONE_Y = 0;
         private const int DUCKING_ANIMATION_FRAME_TWO_X = DUCKING_ANIMATION_FRAME_ONE_X + DUCKING_SPRITE_WIDTH;
 
+        private const int TREX_DEAD_SPRITE_POS_X = 1068;
+
         private const float ACCELERATION_PPS_PER_SECOND = 5f;
 
         public const float START_SPEED = 250f;
@@ -52,6 +54,7 @@ namespace Trex_Clone.Entities
         private Sprite _runningFrameTwo;
         private Sprite _duckingFrameOne;
         private Sprite _duckingFrameTwo;
+        private Sprite _deadSprite;
 
         private SpriteAnimation _blinkAnimation;
         private SpriteAnimation _runningAnimation;
@@ -66,11 +69,21 @@ namespace Trex_Clone.Entities
         private float _startPositionY;
 
         public event EventHandler JumpComplete;
+        public event EventHandler TrexDied;
 
         public Vector2 Position { get; set; }
         public TrexState State { get; private set; }
         public bool IsAlive { get; private set; }
         public float Speed { get; private set; }
+        public Rectangle CollisionBox
+        {
+            get
+            {
+                Rectangle box = new Rectangle((int)Math.Round(Position.X), (int)Math.Round(Position.Y), Default_Width, Default_Height);
+                box.Inflate(-4, -4);
+                return box;
+            }
+        }
 
         public Trex(Texture2D texture2D, Vector2 position, SoundEffect jumpSound)
         {
@@ -94,6 +107,8 @@ namespace Trex_Clone.Entities
             _duckingFrameOne = new Sprite(texture2D, DUCKING_ANIMATION_FRAME_ONE_X, DUCKING_ANIMATION_FRAME_ONE_Y, DUCKING_SPRITE_WIDTH, DUCKING_SPRITE_HEIGHT, Color.White);
             _duckingFrameTwo = new Sprite(texture2D, DUCKING_ANIMATION_FRAME_TWO_X, DUCKING_ANIMATION_FRAME_ONE_Y, DUCKING_SPRITE_WIDTH, DUCKING_SPRITE_HEIGHT, Color.White);
 
+            _deadSprite = new Sprite(texture2D, TREX_DEAD_SPRITE_POS_X, DUCKING_ANIMATION_FRAME_ONE_Y, Default_Width, Default_Height, Color.White);
+
             CreateBlinkAnimation();
             _blinkAnimation.Play();
 
@@ -102,6 +117,8 @@ namespace Trex_Clone.Entities
 
             CreateDuckingAnimation();
             _duckingAnimation.Play();
+
+            IsAlive = true;
 
         }
 
@@ -143,23 +160,31 @@ namespace Trex_Clone.Entities
         #region EntityEvents
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (State == TrexState.Idle)
+            if (IsAlive)
             {
-                _idleBackground.Draw(spriteBatch, Position);
-                _blinkAnimation.Draw(spriteBatch, Position);
+                if (State == TrexState.Idle)
+                {
+                    _idleBackground.Draw(spriteBatch, Position);
+                    _blinkAnimation.Draw(spriteBatch, Position);
+                }
+                else if (State == TrexState.Jumping || State == TrexState.Falling)
+                {
+                    _idleSprite.Draw(spriteBatch, Position);
+                }
+                else if (State == TrexState.Running)
+                {
+                    _runningAnimation.Draw(spriteBatch, Position);
+                }
+                else if (State == TrexState.Ducking)
+                {
+                    _duckingAnimation.Draw(spriteBatch, Position);
+                }
             }
-            else if (State == TrexState.Jumping || State == TrexState.Falling)
+            else
             {
-                _idleSprite.Draw(spriteBatch, Position);
+                _deadSprite.Draw(spriteBatch, Position);
             }
-            else if (State == TrexState.Running)
-            {
-                _runningAnimation.Draw(spriteBatch, Position);
-            }
-            else if (State == TrexState.Ducking)
-            {
-                _duckingAnimation.Draw(spriteBatch, Position);
-            }
+
 
         }
 
@@ -204,15 +229,22 @@ namespace Trex_Clone.Entities
                 _duckingAnimation.Update(gameTime);
             }
 
-            if(State != TrexState.Idle)
+            if (State != TrexState.Idle)
             {
                 Speed += ACCELERATION_PPS_PER_SECOND * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
-            if(Speed > MAX_SPEED)
+            if (Speed > MAX_SPEED)
             {
                 Speed = MAX_SPEED;
             }
             _dropVelocity = 0;
+        }
+
+        public void Initialize()
+        {
+            Speed = START_SPEED;
+            IsAlive = true;
+            State = TrexState.Running;
         }
         #endregion
 
@@ -268,11 +300,20 @@ namespace Trex_Clone.Entities
             return true;
         }
 
-        public void Initialize()
+        public bool Die()
         {
-            Speed = START_SPEED;
-            State = TrexState.Running;
+            if (!IsAlive) return false;
+
+            State = TrexState.Idle;
+            Speed = 0;
+
+            IsAlive = false;
+
+            OnDeath();
+            return true;
         }
+
+
         #endregion
 
         #region Events
@@ -281,6 +322,12 @@ namespace Trex_Clone.Entities
         {
             EventHandler handler = JumpComplete;
             handler?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected virtual void OnDeath()
+        {
+            EventHandler eventHandler = TrexDied;
+            eventHandler?.Invoke(this, EventArgs.Empty);
         }
         #endregion
     }

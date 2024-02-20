@@ -16,14 +16,24 @@ namespace Trex_Clone.Entities
         private const int BIG_CACTUS_HEIGHT = 50;
         private const int BIG_CACTUS_POS_X = 332;
         private const int BIG_CACTUS_POS_Y = 0;
+
+        private const int COLLISION_BOX_INSET = 3;
         private Texture2D _texture;
         public enum GroupSize
         {
-            Small, 
+            Small,
             Medium,
             Large
         }
-        public override Rectangle CollisionBox => throw new NotImplementedException();
+        public override Rectangle CollisionBox
+        {
+            get
+            {
+                Rectangle box = new Rectangle((int)Math.Round(Position.X), (int)Math.Round(Position.Y), Sprite.Width, Sprite.Height);
+                box.Inflate(-COLLISION_BOX_INSET, -COLLISION_BOX_INSET);
+                return box;
+            }
+        }
         public bool isLarge { get; }
         public GroupSize groupSize { get; }
         public Sprite Sprite { get; }

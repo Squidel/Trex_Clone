@@ -8,8 +8,8 @@ namespace Trex_Clone.Entities
     public class ObstacleManager : IGameEntity
     {
         private const float MIN_SPAWN_DISTANCE = 40f;
-        private const int MAX_DISTANCE_BETWEEN_OBSTACLES = 50;
-        private const int MIN_DISTANCE_BETWEEN_OBSTACLES = 10;
+        private const int MAX_DISTANCE_BETWEEN_OBSTACLES = 80;
+        private const int MIN_DISTANCE_BETWEEN_OBSTACLES = 20;
 
         private const int OBSTACLE_TOLERANCE_VALUE = 5;
 

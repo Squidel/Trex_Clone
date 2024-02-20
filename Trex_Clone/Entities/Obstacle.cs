@@ -30,6 +30,19 @@ namespace Trex_Clone.Entities
         {
             float posX = Position.X - _trex.Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             Position = new Vector2(posX, Position.Y);
+
+            CheckCollisions();
+        }
+
+        public void CheckCollisions()
+        {
+            Rectangle obstacleCollisionBox = CollisionBox;
+            Rectangle trexCollisionBox = _trex.CollisionBox;
+
+            if(obstacleCollisionBox.Intersects(trexCollisionBox))
+            {
+                _trex.Die();
+            }
         }
 
     }

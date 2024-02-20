@@ -45,6 +45,8 @@ namespace Trex_Clone
         private ScoreBoard _scoreBoard;
         private ObstacleManager _obstacleManager;
 
+        private GameOver _gameOverScreen;
+
         private KeyboardState _previousKeyBoardState;
 
         public GameState gameState { get; set; }
@@ -83,11 +85,12 @@ namespace Trex_Clone
             _spriteTexture = Content.Load<Texture2D>(ASSET_NAME_SPRITESHEET);
 
             _fadeInTexture = new Texture2D(GraphicsDevice, 1, 1);
-            _fadeInTexture.SetData(new Color[] {Color.White});
+            _fadeInTexture.SetData(new Color[] { Color.White });
 
             _trex = new Trex(_spriteTexture, new Vector2(TREX_START_POS_X, TREX_START_POS_Y - Trex.Default_Height), _sfxJump);
             _trex.DrawOrder = 10;
             _trex.JumpComplete += trex_JumpComplete;
+            _trex.TrexDied += trex_Died;
 
             _scoreBoard = new ScoreBoard(_spriteTexture, new Vector2(SCORE_BOARD_POS_X, SCORE_BOARD_POS_Y), _trex);
             //_scoreBoard.Score = 498;
@@ -99,26 +102,40 @@ namespace Trex_Clone
 
             _obstacleManager = new ObstacleManager(_entityManager, _trex, _scoreBoard, _spriteTexture);
 
+            _gameOverScreen = new GameOver(_spriteTexture);
+            _gameOverScreen.Position = new Vector2(WindowWidth / 2 - (GameOver.GAME_OVER_WIDTH/2), WindowHeight/2-30);
+
+
             _entityManager.AddEntity(_trex);
             _entityManager.AddEntity(_groundManager);
             _entityManager.AddEntity(_scoreBoard);
             _entityManager.AddEntity(_obstacleManager);
+            _entityManager.AddEntity(_gameOverScreen);
 
             _groundManager.Initialize();
 
-            
-            
+
+
         }
 
         private void trex_JumpComplete(object sender, EventArgs e)
         {
-           if(gameState == GameState.Transition)
+            if (gameState == GameState.Transition)
             {
                 gameState = GameState.Playing;
                 _trex.Initialize();
 
                 _obstacleManager.isEnabled = true;
             }
+        }
+
+        private void trex_Died(object sender, EventArgs e)
+        {
+            gameState = GameState.GameOver;
+            _obstacleManager.isEnabled = false;
+            _gameOverScreen.IsEnabled = true;
+            
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -133,15 +150,17 @@ namespace Trex_Clone
             base.Update(gameTime);
             if (gameState == GameState.Playing)
             {
-                _controller.ProcessControls(gameTime); 
-            }else if (gameState == GameState.Transition)
+                _controller.ProcessControls(gameTime);
+            }
+            else if (gameState == GameState.Transition)
             {
                 _fadeInTexturePOSX += (float)gameTime.ElapsedGameTime.TotalSeconds * FADE_IN_ANIMATION_SPEED;
-            }else if(gameState == GameState.Initial)
+            }
+            else if (gameState == GameState.Initial)
             {
                 bool isStartKeyPressed = keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.Space);
                 bool wasStartKeyPressed = _previousKeyBoardState.IsKeyDown(Keys.Up) || _previousKeyBoardState.IsKeyDown(Keys.Space);
-                if ( isStartKeyPressed)
+                if (isStartKeyPressed)
                 {
                     StartGame();
                 }
@@ -159,7 +178,7 @@ namespace Trex_Clone
             _spriteBatch.Begin();
 
             _entityManager.Draw(_spriteBatch, gameTime);
-            if(gameState == GameState.Initial || gameState == GameState.Transition)
+            if (gameState == GameState.Initial || gameState == GameState.Transition)
             {
                 _spriteBatch.Draw(_fadeInTexture, new Rectangle((int)Math.Round(_fadeInTexturePOSX), 0, WindowWidth, WindowHeight), Color.White);
             }
@@ -170,7 +189,7 @@ namespace Trex_Clone
         }
         public bool StartGame()
         {
-            if(gameState != GameState.Initial)
+            if (gameState != GameState.Initial)
             {
                 return false;
             }
