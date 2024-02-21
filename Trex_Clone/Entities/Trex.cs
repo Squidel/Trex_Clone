@@ -81,6 +81,11 @@ namespace Trex_Clone.Entities
             {
                 Rectangle box = new Rectangle((int)Math.Round(Position.X), (int)Math.Round(Position.Y), Default_Width, Default_Height);
                 box.Inflate(-4, -4);
+                if(State == TrexState.Ducking)
+                {
+                    box.Y += 20;
+                    box.Height -= 20;
+                }
                 return box;
             }
         }

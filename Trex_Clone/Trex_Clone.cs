@@ -48,6 +48,8 @@ namespace Trex_Clone
 
         private GameOver _gameOverScreen;
 
+        private CloudManager _cloudManager;
+
         private KeyboardState _previousKeyBoardState;
 
         public GameState gameState { get; set; }
@@ -103,6 +105,8 @@ namespace Trex_Clone
 
             _obstacleManager = new ObstacleManager(_entityManager, _trex, _scoreBoard, _spriteTexture);
 
+            _cloudManager = new CloudManager(_spriteTexture, new Vector2(WindowWidth, 15), _entityManager, _scoreBoard);
+
             var mouseTexture = Content.Load<Texture2D>(MOUSE_TEXTURE);
             _gameOverScreen = new GameOver(_spriteTexture, mouseTexture);
             _gameOverScreen.Position = new Vector2(WindowWidth / 2 - (GameOver.GAME_OVER_WIDTH/2), WindowHeight/2-30);
@@ -113,6 +117,7 @@ namespace Trex_Clone
             _entityManager.AddEntity(_scoreBoard);
             _entityManager.AddEntity(_obstacleManager);
             _entityManager.AddEntity(_gameOverScreen);
+            _entityManager.AddEntity(_cloudManager);
 
             _groundManager.Initialize();
 
